@@ -32,3 +32,9 @@ v2.0.2(SecurViewMobile !!):
 
 v2.0.3(SecurViewMobile !!):
   - solves the flickering problem
+
+v2.0.4:
+  - add encrypt/decrypt username and password
+
+v2.0.5:
+  - fix modify function doesn't encrypt/decrypt username and password

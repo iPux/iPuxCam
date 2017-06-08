@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.camera.viewer.android.trendnet.CameraInfo.CameraInfos;
@@ -29,7 +30,7 @@ public class CameraProvider extends ContentProvider {
     private static final int NOTES = 1;
     private static HashMap<String, String> cameraInfoMap;
 
-    private static class DatabaseHelper extends SQLiteOpenHelper {
+    public class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
@@ -38,6 +39,8 @@ public class CameraProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + CAMINFO_TABLE_NAME + " (" + CameraInfos.CAMERA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + CameraInfos.NAME + " VARCHAR(255)," + CameraInfos.HOST + " LONGTEXT," + CameraInfos.PORT + " LONGTEXT,"
                     + CameraInfos.USERNAME + " LONGTEXT," + CameraInfos.PASSWORD + " LONGTEXT," + CameraInfos.MODEL + " LONGTEXT" + ");");
+
+            PreferenceManager.getDefaultSharedPreferences(CameraProvider.this.getContext()).edit().putString("k", String.valueOf(new java.util.Date().getTime())).commit();
         }
 
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

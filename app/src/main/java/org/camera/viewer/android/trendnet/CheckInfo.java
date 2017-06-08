@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.camera.viewer.android.trendnet.CameraInfo.CameraInfos;
 import org.camera.viewer.android.trendnet.R;
 
@@ -81,8 +84,13 @@ public class CheckInfo extends Activity {
                 values.put(CameraInfos.NAME, name.getText().toString());
                 values.put(CameraInfos.HOST, host.getText().toString());
                 values.put(CameraInfos.PORT, port.getText().toString());
-                values.put(CameraInfos.USERNAME, username.getText().toString());
-                values.put(CameraInfos.PASSWORD, password.getText().toString());
+
+                String key = new String(Hex.encodeHex(DigestUtils.md5(PreferenceManager.getDefaultSharedPreferences(CheckInfo.this).getString("k", "HELLO") + "F")));
+                String user = SecureUtility.encode(username.getText().toString(), key);
+                String pw = SecureUtility.encode(password.getText().toString(), key);
+
+                values.put(CameraInfos.USERNAME, user);
+                values.put(CameraInfos.PASSWORD, pw);
                 values.put(CameraInfos.MODEL, model.getText().toString());
                 CheckInfo.this.getContentResolver().update(CONTENT_URI, values, "_id=" + bundle.getString("id"), null);
 
@@ -190,8 +198,15 @@ public class CheckInfo extends Activity {
                     values.put(CameraInfos.NAME, name.getText().toString());
                     values.put(CameraInfos.HOST, host.getText().toString());
                     values.put(CameraInfos.PORT, port.getText().toString());
-                    values.put(CameraInfos.USERNAME, username.getText().toString());
-                    values.put(CameraInfos.PASSWORD, password.getText().toString());
+
+                    //Update Encoding
+                    String key = new String(Hex.encodeHex(DigestUtils.md5(PreferenceManager.getDefaultSharedPreferences(this).getString("k", "HELLO") + "F")));
+
+                    String user = SecureUtility.encode(username.getText().toString(), key);
+                    String pw = SecureUtility.encode(password.getText().toString(), key);
+
+                    values.put(CameraInfos.USERNAME, user);
+                    values.put(CameraInfos.PASSWORD, pw);
                     values.put(CameraInfos.MODEL, modelName);
                     CheckInfo.this.getContentResolver().update(CONTENT_URI, values, "_id=" + bundle.getString("id"), null);
 

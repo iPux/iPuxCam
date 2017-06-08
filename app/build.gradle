@@ -8,8 +8,8 @@ android {
         applicationId "org.camera.viewer.android.trendnet"
         minSdkVersion 3
         targetSdkVersion 25
-        versionCode 5
-        versionName "2.0.3"
+        versionCode 7
+        versionName "2.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

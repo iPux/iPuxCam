@@ -65,55 +65,51 @@
 	android:layout_x="10dip" 
     android:layout_y="220dip"
     />-->
-<EditText 
-	android:layout_width="190dip" 
-	android:layout_height="wrap_content" 
-	android:layout_x="120dip" 
-	android:layout_y="10dip" 
-	android:id="@+id/name"
-	android:text=""
-    android:textStyle="bold"
-	/>
-<EditText 
-	android:layout_width="190dip" 
-	android:layout_height="wrap_content" 
-	android:layout_x="120dip" 
-	android:layout_y="70dip" 
-	android:id="@+id/ip"
-	android:text=""
-    android:textStyle="bold"
-	/>
-<EditText 
-	android:layout_width="100dip" 
-	android:layout_height="wrap_content" 
-	android:layout_x="120dip" 
-	android:layout_y="130dip" 
-	android:id="@+id/port"
-	android:numeric="integer" 
-	android:maxLength="5"
-	android:text=""
-    android:textStyle="bold"
-	/>
-<EditText 
-	android:layout_width="190dip" 
-	android:layout_height="wrap_content" 
-	android:layout_x="120dip" 
-	android:layout_y="190dip" 
-	android:id="@+id/username"
-	android:text=""
-    android:textStyle="bold"
-	/>
-<EditText 
-	android:layout_width="190dip" 
-	android:layout_height="wrap_content" 
-	android:layout_x="120dip" 
-	android:layout_y="250dip" 
-	android:id="@+id/password"
-	android:password="true"
-	android:text=""
-    android:textStyle="bold"
-	/>
-<EditText 
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="190dip"
+        android:layout_height="wrap_content"
+        android:layout_x="120dip"
+        android:layout_y="10dip"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/ip"
+        android:layout_width="190dip"
+        android:layout_height="wrap_content"
+        android:layout_x="120dip"
+        android:layout_y="70dip"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/port"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:layout_x="120dip"
+        android:layout_y="130dip"
+        android:maxLength="5"
+        android:numeric="integer"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="190dip"
+        android:layout_height="wrap_content"
+        android:layout_x="120dip"
+        android:layout_y="190dip"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="190dip"
+        android:layout_height="wrap_content"
+        android:layout_x="120dip"
+        android:layout_y="250dip"
+        android:password="true"
+        android:textStyle="bold" />
+
+    <EditText
 	android:layout_width="190dip" 
 	android:layout_height="wrap_content" 
 	android:layout_x="120dip" 

@@ -6,12 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.camera.viewer.android.trendnet.R;
 
 import java.util.ArrayList;
@@ -101,8 +104,17 @@ public class AddressBook extends ListActivity {
         info.putString("name", cur.getString(1));
         info.putString("host", cur.getString(2));
         info.putString("port", cur.getString(3));
-        info.putString("username", cur.getString(4));
-        info.putString("password", cur.getString(5));
+
+        //Query Encoding
+        String u = cur.getString(4);
+        String p = cur.getString(5);
+        String key = new String(Hex.encodeHex(DigestUtils.md5(PreferenceManager.getDefaultSharedPreferences(this).getString("k", "HELLO") + "F")));
+
+        String user = SecureUtility.decode(u, key);
+        String pw = SecureUtility.decode(p, key);
+
+        info.putString("username", user);
+        info.putString("password", pw);
         info.putString("model", cur.getString(6));
         info.putString("mediatype", "MJPEG");
         ciIntent.putExtras(info);
