@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+        android:id="@+id/txtRemind"
+        android:layout_width="fill_parent"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:background="#ffff00"
+        android:textColor="#000000"
+        android:textSize="13dp"
+        android:autoLink="web"
+        android:text="@string/firmware_remind"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/lvDevice"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/txtRemind"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="5dp"></ListView>
+
+</RelativeLayout>
