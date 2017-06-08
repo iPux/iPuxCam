@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,14 +48,25 @@ public class AddressBook extends ListActivity {
                 new String[]{"name_item", "host_item"},
                 new int[]{R.id.name_item, R.id.host_item}));
 
+        if (coll.size() < 1) {
+            new Handler().postDelayed(openMenu, 1000);
+        }
+
         System.gc();
     }
+
+    private Runnable openMenu = new Runnable() {
+        @Override
+        public void run() {
+            openOptionsMenu();
+        }
+    };
 
     protected void onUserLeaveHint() {
         finish();
         getApplication().onTerminate();
     }
-
+    
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 0, 0, R.string.add).setIcon(android.R.drawable.ic_menu_add);
         menu.add(0, 1, 1, R.string.info).setIcon(android.R.drawable.ic_menu_info_details);

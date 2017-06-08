@@ -30,4 +30,5 @@ v2.0.2(SecurViewMobile !!):
   - Auto switch to full screen when rotated to landscap
   - Tap screen to toggle between full screen and proportion screen
 
-
+v2.0.3(SecurViewMobile !!):
+  - solves the flickering problem

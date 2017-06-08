@@ -4,7 +4,14 @@
     android:layout_height="fill_parent" >
 
     <ImageView
-        android:id="@+id/viewstream"
+        android:id="@+id/viewstream0"
+        android:layout_width="320dip"
+        android:layout_height="240dip"
+        android:layout_x="0dip"
+        android:layout_y="0dip" />
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
         android:layout_width="320dip"
         android:layout_height="240dip"
         android:layout_x="0dip"

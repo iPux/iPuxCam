@@ -49,7 +49,7 @@ public class CheckInfo extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.checkinfo);
-
+       
         ciIntent = this.getIntent();
         bundle = ciIntent.getExtras();
 
@@ -123,7 +123,7 @@ public class CheckInfo extends Activity {
                 startActivity(abIntent);
                 finish();
             }
-
+        	
         });
         
         /*connect = (Button)findViewById(R.id.connect_i);
@@ -139,7 +139,7 @@ public class CheckInfo extends Activity {
 			}
         	
         });*/
-
+        
         name.setEnabled(false);
         host.setEnabled(false);
         port.setEnabled(false);
@@ -149,7 +149,7 @@ public class CheckInfo extends Activity {
         save.setVisibility(View.INVISIBLE);
         contact.setVisibility(View.INVISIBLE);
         cancel.setVisibility(View.INVISIBLE);
-		
+
 		/*name.setFocusable(false);
 		host.setFocusable(false);
 		port.setFocusable(false);
@@ -163,7 +163,7 @@ public class CheckInfo extends Activity {
         finish();
         getApplication().onTerminate();
     }
-
+    
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 0, 0, R.string.connect).setIcon(android.R.drawable.ic_menu_view);
         menu.add(0, 1, 1, R.string.modify).setIcon(android.R.drawable.ic_menu_edit);

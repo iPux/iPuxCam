@@ -7,6 +7,9 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -17,17 +20,17 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
 import org.apache.commons.codec.binary.Base64;
-import org.camera.viewer.android.trendnet.R;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -43,7 +46,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Random;
 
-public class ViewPanel extends Activity {
+public class ViewPanel extends Activity implements SurfaceHolder.Callback {
     private boolean snap_shot = false;
     private boolean app_exit = true;
     private int touchDownX = 0;
@@ -69,7 +72,7 @@ public class ViewPanel extends Activity {
     private Bitmap bitmap = null;
     private Bitmap resizeBmp = null;
     private Bitmap snapshotBmp = null;
-    private ImageView viewStream;
+    //	private ImageView viewStream;
     private ImageView viewbg;
     private TextView debugmsg;
     private ImageButton backBtn;
@@ -83,24 +86,34 @@ public class ViewPanel extends Activity {
     private ImageButton leftBtn;
     private ImageButton rightBtn;
     private ImageButton homeBtn;
+    private AbsoluteLayout control_layout;
     private AudioTrack audioTrackIn = null;
     private AudioManager volumeCtrl;
-    private AbsoluteLayout control_layout;
 
     private final String myboundary = "--myboundary\r\n";
     private final String contentType = "Content-Type: multipart/mixed;boundary=myboundary\r\n\r\n";
     private static final String[] pt_cmd = {"home", "up", "down", "left", "right"};
 
-    protected static final int SHOWIMAGE = 0x101;
+    //	protected static final int SHOWIMAGE = 0x101;
     protected static final int SAVEIMAGE = 0x102;
+
+    //	private ScaleType landscapeScale = ScaleType.FIT_XY;
+    private boolean fullScreen = true;
+    ;
+    private SurfaceView mSurfaceView;
+    private SurfaceHolder mSurfaceHolder;
+    private static Paint paint = new Paint();
+    private boolean surfaceExists;
+    private int bmpWidth;
+    private int bmpHeight;
 
     Handler myHandler = new Handler() {
 
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case ViewPanel.SHOWIMAGE:
-                    updateImgView();
-                    break;
+//				case ViewPanel.SHOWIMAGE:   
+//					updateImgView();  
+//					break;
                 case ViewPanel.SAVEIMAGE:
 //					debugmsg.setText("DebugMsg:save image");
                     SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss_");
@@ -113,10 +126,17 @@ public class ViewPanel extends Activity {
         }
     };
 
-    private void updateImgView() {
-//		viewStream.setImageBitmap(bitmap);
-        viewStream.setImageBitmap(resizeBmp);
-    }
+//	private void updateImgView(){
+////		viewStream.setImageBitmap(bitmap);
+////		viewStream.setImageBitmap(resizeBmp);
+//		 Canvas rCanvas = mSurfaceHolder.lockCanvas();
+//		 synchronized (mSurfaceHolder) {
+//			 rCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+//			 rCanvas.drawBitmap(resizeBmp, 0, 0, paint);
+//		 }
+//		
+//		 mSurfaceHolder.unlockCanvasAndPost(rCanvas);
+//	}
 
     private void capture(String s) {
         try {
@@ -133,7 +153,7 @@ public class ViewPanel extends Activity {
             }
 
             FileOutputStream fileOutputStream = null;
-            int quality = 50;
+            int quality = 100;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 5;
             while (snapshotBmp == null) {
@@ -180,15 +200,17 @@ public class ViewPanel extends Activity {
         debugmsg = (TextView) findViewById(R.id.debugmsg);
 //        debugmsg.setText("DebugMsg:");
 
-        viewStream = (ImageView) findViewById(R.id.viewstream);
+//        viewStream = (ImageView)findViewById(R.id.viewstream0);
         viewbg = (ImageView) findViewById(R.id.viewbg);
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        mSurfaceHolder = mSurfaceView.getHolder();
+        mSurfaceHolder.addCallback(this);
 
         backBtn = (ImageButton) findViewById(R.id.back);
         backBtn.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 backEvent();
             }
-
         });
 
         listenBtn = (ImageButton) findViewById(R.id.listen);
@@ -333,6 +355,8 @@ public class ViewPanel extends Activity {
         new Thread(showVideo).start();
 //        new Thread(inAudio).start();
 //        new Thread(outAudio).start();
+
+        setView();
     }
 
     private void backEvent() {
@@ -411,6 +435,21 @@ public class ViewPanel extends Activity {
     }
 
     public boolean onTouchEvent(MotionEvent event) {
+        //mGestureDetector.onTouchEvent( event );
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//				if(landscapeScale.equals(ScaleType.FIT_CENTER)){
+//					landscapeScale = ScaleType.FIT_XY;
+//				}
+//				else{
+//					landscapeScale = ScaleType.FIT_CENTER;
+//				}
+                    fullScreen = !fullScreen;
+                    setView();
+                }
+                break;
+        }
         return true;
     }
 
@@ -419,8 +458,15 @@ public class ViewPanel extends Activity {
             bitmap = null;
         if (resizeBmp != null)
             resizeBmp = null;
+
         bitmap = BitmapFactory.decodeByteArray(imgbuf, 0, len);
-        resizeBmp = Bitmap.createScaledBitmap(bitmap, 320, 240, false);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && fullScreen) {
+            float scale = Math.min((float) bmpWidth / (float) bitmap.getWidth(), (float) bmpHeight / (float) bitmap.getHeight());
+            resizeBmp = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * scale), (int) (bitmap.getHeight() * scale), false);
+        } else {
+            resizeBmp = Bitmap.createScaledBitmap(bitmap, bmpWidth, bmpHeight, false);
+        }
+
         if (bitmap == null || resizeBmp == null) {
 //			System.err.println("<err>:Fail to create imgPic");
             return false;
@@ -456,6 +502,8 @@ public class ViewPanel extends Activity {
 
         public void run() {
             boolean chk = true;
+            Canvas c = null;
+            Paint p = new Paint();
             while (httpVideo.bVideoShowRunning == true) {
                 if (httpVideo.vbuf == null)
                     continue;
@@ -466,7 +514,7 @@ public class ViewPanel extends Activity {
                 httpVideo.vbuf.state[httpVideo.vbuf.idx] = StreamBuffer.BF_IN_USE;
 
                 chk = checkJPG(httpVideo.vbuf.buf[httpVideo.vbuf.idx], httpVideo.vbuf.len[httpVideo.vbuf.idx]);
-                if (chk)// check is ok
+                if (chk && surfaceExists)// check is ok
                 {
                     if (CreateImage(httpVideo.vbuf.buf[httpVideo.vbuf.idx], httpVideo.vbuf.len[httpVideo.vbuf.idx]) == false) {
                         httpVideo.vbuf.state[httpVideo.vbuf.idx] = StreamBuffer.BF_FREE;
@@ -477,31 +525,50 @@ public class ViewPanel extends Activity {
                         httpVideo.imgOK = true;
 
 //						show image
-                        Message message = new Message();
-                        message.what = ViewPanel.SHOWIMAGE;
-                        myHandler.sendMessage(message);
-
+//						if(surfaceExists){
+//							Message message = new Message();
+//							message.what = ViewPanel.SHOWIMAGE;
+//							myHandler.sendMessage(message);
+//						}
+//						
                         if (snap_shot == true) {
                             snap_shot = false;
                             (new Thread() {
-
                                 public void run() {
-                                    snapshotBmp = Bitmap.createScaledBitmap(bitmap, 320, 240, false);
+//		                        	snapshotBmp = Bitmap.createScaledBitmap(bitmap,320,240,false);
+                                    snapshotBmp = bitmap;
                                     Message saveMsg = new Message();
                                     saveMsg.what = ViewPanel.SAVEIMAGE;
                                     myHandler.sendMessage(saveMsg);
                                 }
                             }).start();
                         }
+
+                        try {
+                            c = mSurfaceHolder.lockCanvas();
+
+                            synchronized (mSurfaceHolder) {
+
+                                c.drawColor(Color.BLACK);
+                                c.drawBitmap(resizeBmp, Math.abs(bmpWidth - resizeBmp.getWidth()) / 2, Math.abs(bmpHeight - resizeBmp.getHeight()) / 2, p);
+                            }
+
+                            httpVideo.httpparser.nonsafeSleep(1);
+
+                            httpVideo.vbuf.state[httpVideo.vbuf.idx] = StreamBuffer.BF_FREE;
+//							System.err.println("vbuf.state[" + vbuf.idx + "][FREE]: "
+//									+ vbuf.state[vbuf.idx]);
+                            httpVideo.vbuf.idx = (httpVideo.vbuf.idx + 1) % httpVideo.vbuf.maxBufSlot;
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (c != null) {
+                                mSurfaceHolder.unlockCanvasAndPost(c);
+                            }
+                        }
                     }
-
                 }
-                httpVideo.httpparser.nonsafeSleep(1);
-
-                httpVideo.vbuf.state[httpVideo.vbuf.idx] = StreamBuffer.BF_FREE;
-//				System.err.println("vbuf.state[" + vbuf.idx + "][FREE]: "
-//						+ vbuf.state[vbuf.idx]);
-                httpVideo.vbuf.idx = (httpVideo.vbuf.idx + 1) % httpVideo.vbuf.maxBufSlot;
 
             }
 
@@ -711,13 +778,31 @@ public class ViewPanel extends Activity {
     private void setView() {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             control_layout.setVisibility(View.VISIBLE);
-            viewStream.setLayoutParams(new AbsoluteLayout.LayoutParams((int) (320 * getResources().getDisplayMetrics().density), (int) (240 * getResources().getDisplayMetrics().density), 0, 0));
-            viewStream.setScaleType(ScaleType.FIT_XY);
+            mSurfaceView.setLayoutParams(new AbsoluteLayout.LayoutParams((int) (320 * getResources().getDisplayMetrics().density), (int) (240 * getResources().getDisplayMetrics().density), 0, 0));
+//			viewStream.setScaleType(ScaleType.FIT_XY);
         }
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             control_layout.setVisibility(View.GONE);
-            viewStream.setLayoutParams(new AbsoluteLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, 0, 0));
-            viewStream.setScaleType(ScaleType.FIT_XY);
+            mSurfaceView.setLayoutParams(new AbsoluteLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, 0, 0));
+//			viewStream.setScaleType(landscapeScale);
         }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+        bmpWidth = mSurfaceView.getWidth();
+        bmpHeight = mSurfaceView.getHeight();
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder arg0) {
+        surfaceExists = true;
+        bmpWidth = mSurfaceView.getWidth();
+        bmpHeight = mSurfaceView.getHeight();
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder arg0) {
+        surfaceExists = false;
     }
 }
