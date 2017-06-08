@@ -5,7 +5,6 @@
 This is a very old application , only MJPEG  !!!.
 
   - iPuxCam
-
  ![](https://lh6.ggpht.com/sEokryyhUPvHwNR2wmwxSZTPNJjcVLPhyePVV30O60LqXGUTRSUOcsb94o5wN76Eg_dm)
 
  ![](https://lh4.ggpht.com/4Ru01NKq6_YFdvF7Q2Quqz5voYO2esY77gn3vkkmtWZU69cDk-5PCRtI5OJOovhiRmI)
@@ -19,12 +18,16 @@ This is a very old application , only MJPEG  !!!.
  ![](http://www.downloadcollection.com/graphics/largeimages/ipuxcam-475766.jpeg)
 
 # Release notes!
+
 v2.0.1(1.0.3):
   - Android 4.1 tested 
   - Support full screen
   - Auto switch to full screen when rotated to landscap
   - Tap screen to toggle between full screen and proportion screen
 
-
+v2.0.2(SecurViewMobile !!):
+  - Support full screen
+  - Auto switch to full screen when rotated to landscap
+  - Tap screen to toggle between full screen and proportion screen
 
 

@@ -1,4 +1,4 @@
-package org.camera.viewer.android;
+package org.camera.viewer.android.trendnet;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
@@ -6,7 +6,7 @@ import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 
 public class MediaScannerNotifier implements
-MediaScannerConnectionClient {
+        MediaScannerConnectionClient {
     private Context mContext;
     private MediaScannerConnection mConnection;
     private String mPath;

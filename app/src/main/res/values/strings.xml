@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">iPuxCam</string>
+    <string name="app_name">SecurView Mobile</string>
 <string name="Name">Name</string>
 <string name="Host">Host</string>
 <string name="Port">Port</string>
