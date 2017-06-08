@@ -38,3 +38,6 @@ v2.0.4:
 
 v2.0.5:
   - fix modify function doesn't encrypt/decrypt username and password
+
+v2.0.6:
+  - add update firmware message

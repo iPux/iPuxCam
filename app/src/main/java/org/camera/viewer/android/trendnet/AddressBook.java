@@ -1,6 +1,6 @@
 package org.camera.viewer.android.trendnet;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,26 +10,33 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.camera.viewer.android.trendnet.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddressBook extends ListActivity {
+public class AddressBook extends Activity implements OnItemClickListener {
     private Cursor cur;
     public static int g_variable;
     public static final String AUTHORITY = "org.camera.viewer.android.trendnet.cameraprovider";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/camerainfos");
     private static final String[] PROJECTION = new String[]{"_id", "name", "host", "port", "username", "password", "model"};
 
+    private ListView listView;
+    
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_addressbook);
+
+        listView = (ListView) findViewById(R.id.lvDevice);
 
         Intent intent = getIntent();
         if (intent.getData() == null)
@@ -45,11 +52,14 @@ public class AddressBook extends ListActivity {
             coll.add(item);
             cur.moveToNext();
         }
-        this.setListAdapter(new SimpleAdapter(this,
+
+        listView.setAdapter(new SimpleAdapter(this,
                 coll,
                 R.layout.addressbook,
                 new String[]{"name_item", "host_item"},
                 new int[]{R.id.name_item, R.id.host_item}));
+
+        listView.setOnItemClickListener(this);
 
         if (coll.size() < 1) {
             new Handler().postDelayed(openMenu, 1000);
@@ -112,7 +122,7 @@ public class AddressBook extends ListActivity {
 
         String user = SecureUtility.decode(u, key);
         String pw = SecureUtility.decode(p, key);
-
+        
         info.putString("username", user);
         info.putString("password", pw);
         info.putString("model", cur.getString(6));
@@ -120,5 +130,10 @@ public class AddressBook extends ListActivity {
         ciIntent.putExtras(info);
         startActivity(ciIntent);
         finish();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+        onListItemClick(listView, v, position, id);
     }
 }

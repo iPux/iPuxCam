@@ -33,10 +33,10 @@ public class HttpAudioOutStream implements Runnable {
         hbuf[4] = (byte) 0xa0;
         hbuf[5] = (byte) 0x0f;
 
-        minRecordBufferSizeInBytes = AudioRecord.getMinBufferSize(8000,
+        minRecordBufferSizeInBytes = AudioRecord.getMinBufferSize(11025,
                 AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
 
-        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000,
+        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 11025,
                 AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT,
                 minRecordBufferSizeInBytes);
 
