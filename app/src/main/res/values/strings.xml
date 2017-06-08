@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">iPuxCam</string>
+<string name="Name">Name</string>
+<string name="Host">Host</string>
+<string name="Port">Port</string>
+<string name="Username">User Name</string>
+<string name="Password">Password</string>
+<string name="Model">Model</string>
+<string name="mediaType">Media Type</string>
+<string name="save">Save</string>
+<string name="contact">Contact</string>
+<string name="cancel">Cancel</string>
+<string name="back">Back</string>
+<string name="listen">Listen</string>
+<string name="talk">Talk</string>
+<string name="snapshot">Snapshot</string>
+<string name="home">Home</string>
+<string name="up">Up</string>
+<string name="down">Down</string>
+<string name="left">Left</string>
+<string name="right">Right</string>
+<string name="add">Add</string>
+<string name="zoomin">Zoom In</string>
+<string name="zoomout">Zoom Out</string>
+<string name="info">Information</string>
+<string name="modify">Modify</string>
+<string name="delete">Delete</string>
+<string name="connect">Connect</string>
+<string name="error">Error</string>
+<string name="connectfail">Connection fail!</string>
+<string name="ok">OK</string>
+<string name="addbook">Address Book</string>
+</resources>

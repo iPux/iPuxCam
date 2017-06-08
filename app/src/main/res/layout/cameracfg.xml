@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent">
+    >
+<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"  
+    android:text="@string/Name"
+    android:layout_x="10dip" 
+    android:layout_y="20dip"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    />
+<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"  
+    android:text="@string/Host"
+    android:layout_x="10dip" 
+    android:layout_y="80dip"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    />
+<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"  
+    android:text="@string/Port"
+    android:layout_x="10dip" 
+    android:layout_y="140dip"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    />
+<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:text="@string/Username"
+    android:layout_x="10dip" 
+    android:layout_y="200dip"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    />
+<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:text="@string/Password"
+	android:layout_x="10dip" 
+    android:layout_y="260dip"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    />
+<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:text="@string/Model"
+	android:layout_x="10dip" 
+    android:layout_y="320dip"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    />
+<!--<TextView  
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content" 
+    android:text="@string/mediaType"
+	android:layout_x="10dip" 
+    android:layout_y="220dip"
+    />-->
+<EditText 
+	android:layout_width="190dip" 
+	android:layout_height="wrap_content" 
+	android:layout_x="120dip" 
+	android:layout_y="10dip" 
+	android:id="@+id/name"
+	android:text=""
+    android:textStyle="bold"
+	/>
+<EditText 
+	android:layout_width="190dip" 
+	android:layout_height="wrap_content" 
+	android:layout_x="120dip" 
+	android:layout_y="70dip" 
+	android:id="@+id/ip"
+	android:text=""
+    android:textStyle="bold"
+	/>
+<EditText 
+	android:layout_width="100dip" 
+	android:layout_height="wrap_content" 
+	android:layout_x="120dip" 
+	android:layout_y="130dip" 
+	android:id="@+id/port"
+	android:numeric="integer" 
+	android:maxLength="5"
+	android:text=""
+    android:textStyle="bold"
+	/>
+<EditText 
+	android:layout_width="190dip" 
+	android:layout_height="wrap_content" 
+	android:layout_x="120dip" 
+	android:layout_y="190dip" 
+	android:id="@+id/username"
+	android:text=""
+    android:textStyle="bold"
+	/>
+<EditText 
+	android:layout_width="190dip" 
+	android:layout_height="wrap_content" 
+	android:layout_x="120dip" 
+	android:layout_y="250dip" 
+	android:id="@+id/password"
+	android:password="true"
+	android:text=""
+    android:textStyle="bold"
+	/>
+<EditText 
+	android:layout_width="190dip" 
+	android:layout_height="wrap_content" 
+	android:layout_x="120dip" 
+	android:layout_y="310dip" 
+	android:id="@+id/model"
+	android:text=""
+    android:textStyle="bold"
+	/>
+<!--<Spinner 
+	android:id="@+id/mediatype" 
+	android:layout_width="120dip" 
+	android:layout_height="wrap_content"
+	android:layout_x="100dip" 
+	android:layout_y="205dip" 
+	/>-->
+<Button 
+	android:text="@string/save" 
+	android:id="@+id/save"
+	android:layout_width="95dip" 
+	android:layout_height="wrap_content"
+	android:layout_x="10dip" 
+	android:layout_y="370dip"
+    android:textSize="15sp"
+    android:textStyle="bold"
+	/>
+<Button 
+	android:text="@string/contact" 
+	android:id="@+id/contact" 
+	android:layout_width="95dip" 
+	android:layout_height="wrap_content"
+	android:layout_x="110dip" 
+	android:layout_y="370dip"
+    android:textSize="15sp"
+    android:textStyle="bold"
+	/>
+<Button 
+	android:text="@string/cancel" 
+	android:id="@+id/cancel" 
+	android:layout_width="95dip" 
+	android:layout_height="wrap_content"
+	android:layout_x="210dip" 
+	android:layout_y="370dip"
+    android:textSize="15sp"
+    android:textStyle="bold"
+	/>
+</AbsoluteLayout>
