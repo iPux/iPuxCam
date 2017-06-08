@@ -3,7 +3,6 @@ package org.camera.viewer.android.trendnet;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -25,8 +24,6 @@ import java.util.Map;
 public class AddressBook extends Activity implements OnItemClickListener {
     private Cursor cur;
     public static int g_variable;
-    public static final String AUTHORITY = "org.camera.viewer.android.trendnet.cameraprovider";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/camerainfos");
     private static final String[] PROJECTION = new String[]{"_id", "name", "host", "port", "username", "password", "model"};
 
     private ListView listView;
@@ -40,7 +37,7 @@ public class AddressBook extends Activity implements OnItemClickListener {
 
         Intent intent = getIntent();
         if (intent.getData() == null)
-            intent.setData(CONTENT_URI);
+            intent.setData(CameraProvider.CONTENT_URI);
         cur = getContentResolver().query(getIntent().getData(), PROJECTION, null, null, null);
         ArrayList<Map<String, Object>> coll = new ArrayList<Map<String, Object>>();
         Map<String, Object> item;

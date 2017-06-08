@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -41,9 +40,6 @@ public class CheckInfo extends Activity {
     private ArrayAdapter<String> mTypeAdapter;
     private Bundle bundle;
     private Intent ciIntent;
-
-    public static final String AUTHORITY = "org.camera.viewer.android.trendnet.cameraprovider";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/camerainfos");
 
     /**
      * Called when the activity is first created.
@@ -92,7 +88,7 @@ public class CheckInfo extends Activity {
                 values.put(CameraInfos.USERNAME, user);
                 values.put(CameraInfos.PASSWORD, pw);
                 values.put(CameraInfos.MODEL, model.getText().toString());
-                CheckInfo.this.getContentResolver().update(CONTENT_URI, values, "_id=" + bundle.getString("id"), null);
+                CheckInfo.this.getContentResolver().update(CameraProvider.CONTENT_URI, values, "_id=" + bundle.getString("id"), null);
 
                 Intent abIntent = new Intent();
                 abIntent.setClass(CheckInfo.this, AddressBook.class);
@@ -208,7 +204,7 @@ public class CheckInfo extends Activity {
                     values.put(CameraInfos.USERNAME, user);
                     values.put(CameraInfos.PASSWORD, pw);
                     values.put(CameraInfos.MODEL, modelName);
-                    CheckInfo.this.getContentResolver().update(CONTENT_URI, values, "_id=" + bundle.getString("id"), null);
+                    CheckInfo.this.getContentResolver().update(CameraProvider.CONTENT_URI, values, "_id=" + bundle.getString("id"), null);
 
                     Bundle info = new Bundle();
                     info.putString("id", bundle.getString("id"));
@@ -240,7 +236,7 @@ public class CheckInfo extends Activity {
                 cancel.setVisibility(View.VISIBLE);
                 break;
             case 2:
-                CheckInfo.this.getContentResolver().delete(CONTENT_URI, "_id=" + bundle.getString("id"), null);
+                CheckInfo.this.getContentResolver().delete(CameraProvider.CONTENT_URI, "_id=" + bundle.getString("id"), null);
 
                 Intent abIntent = new Intent();
                 abIntent.setClass(CheckInfo.this, AddressBook.class);

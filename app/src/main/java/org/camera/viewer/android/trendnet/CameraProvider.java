@@ -25,6 +25,7 @@ public class CameraProvider extends ContentProvider {
     private static final int DATABASE_VERSION = 1;
     private static final String CAMINFO_TABLE_NAME = "camerainfos";
     public static final String AUTHORITY = "org.camera.viewer.android.trendnet.cameraprovider";
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/camerainfos");
 
     private static final UriMatcher sUriMatcher;
     private static final int NOTES = 1;
@@ -85,7 +86,7 @@ public class CameraProvider extends ContentProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         long rowId = db.insert(CAMINFO_TABLE_NAME, CameraInfos.MODEL, values);
         if (rowId > 0) {
-            Uri noteUri = ContentUris.withAppendedId(CameraInfos.CONTENT_URI, rowId);
+            Uri noteUri = ContentUris.withAppendedId(CameraProvider.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(noteUri, null);
             return noteUri;
         }

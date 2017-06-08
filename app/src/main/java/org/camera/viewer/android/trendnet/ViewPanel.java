@@ -33,18 +33,16 @@ import android.widget.TextView;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Random;
+
+import tw.com.wethink.ipcam.streaming.AudioOutManager;
+import tw.com.wethink.ipcam.streaming.AudioOutOutputStream;
 
 public class ViewPanel extends Activity implements SurfaceHolder.Callback {
     private boolean snap_shot = false;
@@ -66,7 +64,13 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
     private Intent vpIntent;
     private HttpVideoStream httpVideo = null;
     private HttpAudioInStream httpAideoIn = null;
-    private HttpAudioOutStream httpAideoOut = null;
+
+    //------------------------------------------------------
+    //2013/04 Replaced by Wethink Ltd. Create new audio out solution
+//	private HttpAudioOutStream httpAideoOut = null;
+    private AudioOutManager aoManager;  //2013/04 Replaced by Wethink Ltd. Create new audio out solution
+    //------------------------------------------------------
+
     private PowerManager pm;
     private PowerManager.WakeLock wl;
     private Bitmap bitmap = null;
@@ -350,8 +354,15 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
 
         httpVideo = new HttpVideoStream(bundle);
         httpAideoIn = new HttpAudioInStream(bundle);
-        httpAideoOut = new HttpAudioOutStream();
 
+        //2013/04 Replaced by Wethink Ltd. Create new audio out solution
+//        httpAideoOut = new HttpAudioOutStream();
+        String username = bundle.getString("username");
+        String password = bundle.getString("password");
+        AudioOutOutputStream.initData(RemoteHost, Integer.parseInt(RemotePort), username, password);
+        aoManager = new AudioOutManager();
+        //------------------------------------------------------
+        
         new Thread(showVideo).start();
 //        new Thread(inAudio).start();
 //        new Thread(outAudio).start();
@@ -365,12 +376,12 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
             httpVideo.stop();
         if (httpAideoIn != null)
             httpAideoIn.stop();
-        if (httpAideoOut != null)
-            httpAideoOut.stop();
+//		if(httpAideoOut!=null)
+//			httpAideoOut.stop();
         if (wl != null)
             wl.release();
-        if (httpAideoOut != null)
-            httpAideoOut.release();
+//		if(httpAideoOut!=null)
+//			httpAideoOut.release();
 
         Intent abIntent = new Intent();
         abIntent.setClass(ViewPanel.this, AddressBook.class);
@@ -397,14 +408,25 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
         if (talkStatus == 0) {
             talkStatus = 1;
             talkBtn.setImageResource(R.drawable.o7);
-            httpAideoOut.start();
-            new Thread(outAudio).start();
-//			debugmsg.setText("DebugMsg:Talk start");
 
+            //------------------------------------------------------
+            //2013/04 Replaced by Wethink Ltd. Create new audio out solution
+//			httpAideoOut.start();
+//			new Thread(outAudio).start();			
+            aoManager.startRecording();
+            //------------------------------------------------------
+
+//			debugmsg.setText("DebugMsg:Talk start");			
         } else {
             talkStatus = 0;
             talkBtn.setImageResource(R.drawable.a7);
-            httpAideoOut.stop();
+
+            //------------------------------------------------------
+            //2013/04 Replaced by Wethink Ltd. Create new audio out solution
+//			httpAideoOut.stop();
+            aoManager.stopRecording();
+            //------------------------------------------------------
+
 //			debugmsg.setText("DebugMsg:Talk stop");
         }
     }
@@ -619,55 +641,55 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
 
         }
     };
-    private Runnable outAudio = new Runnable() {
-
-        public void run() {
-            Random ran = new Random(System.currentTimeMillis());
-            while (httpAideoOut.bMicSendRunning == true) {
-                String tk_sRequest;
-                try {
-                    Socket tk_sktClient;
-                    BufferedReader tk_Input;
-                    DataOutputStream tk_Output;
-
-                    tk_sRequest = "";
-                    tk_sRequest = tk_sRequest + "POST " + "/cgi/audio/audio.cgi?type=PCM" + " HTTP/1.1\r\n";
-                    tk_sRequest = tk_sRequest + "Authorization: Basic " + AccountCode + "\r\n";
-                    tk_sRequest = tk_sRequest + contentType;
-                    tk_sRequest = tk_sRequest + "\r\n";
-
-                    tk_sktClient = new Socket(RemoteHost, Integer.parseInt(RemotePort));
-
-                    tk_Output = new DataOutputStream(tk_sktClient.getOutputStream());
-                    tk_Input = new BufferedReader(new InputStreamReader(tk_sktClient.getInputStream()));
-                    tk_Output.write(tk_sRequest.getBytes());
-
-                    while (httpAideoOut.bMicSendRunning == true) {
-                        if (httpAideoOut.tbuf.state[httpAideoOut.tbuf.idx] != StreamBuffer.BF_WRITE_OK) { // Not OK for Read
-                            httpAideoOut.httpparser.nonsafeSleep(1);
-                            continue;
-                        }
-                        httpAideoOut.tbuf.state[httpAideoOut.tbuf.idx] = StreamBuffer.BF_IN_USE;
-                        //-send http packet
-                        tk_Output.write(myboundary.getBytes(), 0, myboundary.length());
-                        String contentLength = "Content-Length: " + (httpAideoOut.hbuf.length + httpAideoOut.tbuf.len[httpAideoOut.tbuf.idx]) + "\r\n\r\n";
-                        tk_Output.write(contentLength.getBytes(), 0, contentLength.length());
-                        tk_Output.write(httpAideoOut.hbuf, 0, httpAideoOut.hbuf.length);
-                        tk_Output.write(httpAideoOut.tbuf.buf[httpAideoOut.tbuf.idx], 0, httpAideoOut.tbuf.len[httpAideoOut.tbuf.idx]);
-                        httpAideoOut.tbuf.state[httpAideoOut.tbuf.idx] = StreamBuffer.BF_FREE;
-                        httpAideoOut.tbuf.idx = (httpAideoOut.tbuf.idx + 1) % httpAideoOut.tbuf.maxBufSlot;
-                    }
-                    tk_Output.close();
-                    tk_sktClient.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    httpAideoOut.httpparser.nonsafeSleep(3000 + ran.nextInt() % 2000);
-                    continue;
-                }
-            }
-        }
-
-    };
+//	private Runnable outAudio = new Runnable() {
+//
+//		public void run() {
+//			Random ran = new Random(System.currentTimeMillis());
+//			while (httpAideoOut.bMicSendRunning == true) {
+//				String tk_sRequest;
+//				try {
+//					Socket tk_sktClient;
+//					BufferedReader tk_Input;
+//					DataOutputStream tk_Output;
+//					
+//					tk_sRequest = "";
+//					tk_sRequest = tk_sRequest + "POST " + "/cgi/audio/audio.cgi?type=PCM"+ " HTTP/1.1\r\n";
+//					tk_sRequest = tk_sRequest + "Authorization: Basic " + AccountCode + "\r\n";
+//					tk_sRequest = tk_sRequest + contentType;
+//					tk_sRequest = tk_sRequest + "\r\n";
+//
+//					tk_sktClient = new Socket(RemoteHost, Integer.parseInt(RemotePort));
+//					
+//					tk_Output = new DataOutputStream(tk_sktClient.getOutputStream());				
+//					tk_Input = new BufferedReader(new InputStreamReader(tk_sktClient.getInputStream()));
+//					tk_Output.write(tk_sRequest.getBytes());
+//
+//					while (httpAideoOut.bMicSendRunning == true) {
+//						if (httpAideoOut.tbuf.state[httpAideoOut.tbuf.idx] != StreamBuffer.BF_WRITE_OK) { // Not OK for Read
+//							httpAideoOut.httpparser.nonsafeSleep(1);
+//							continue;
+//						}
+//						httpAideoOut.tbuf.state[httpAideoOut.tbuf.idx] = StreamBuffer.BF_IN_USE;
+//						//-send http packet
+//						tk_Output.write(myboundary.getBytes(), 0, myboundary.length());
+//						String contentLength = "Content-Length: "+(httpAideoOut.hbuf.length+httpAideoOut.tbuf.len[httpAideoOut.tbuf.idx])+"\r\n\r\n";
+//						tk_Output.write(contentLength.getBytes(), 0, contentLength.length());
+//						tk_Output.write(httpAideoOut.hbuf, 0, httpAideoOut.hbuf.length);
+//						tk_Output.write(httpAideoOut.tbuf.buf[httpAideoOut.tbuf.idx], 0, httpAideoOut.tbuf.len[httpAideoOut.tbuf.idx]);
+//						httpAideoOut.tbuf.state[httpAideoOut.tbuf.idx] = StreamBuffer.BF_FREE;
+//						httpAideoOut.tbuf.idx = (httpAideoOut.tbuf.idx + 1) % httpAideoOut.tbuf.maxBufSlot;
+//					}
+//					tk_Output.close();
+//					tk_sktClient.close();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					httpAideoOut.httpparser.nonsafeSleep(3000 + ran.nextInt() % 2000);
+//					continue;
+//				}
+//			}
+//		}
+//		
+//	};
 
     protected void onUserLeaveHint() {
         if (app_exit) {
@@ -675,12 +697,12 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
                 httpVideo.stop();
             if (httpAideoIn != null)
                 httpAideoIn.stop();
-            if (httpAideoOut != null)
-                httpAideoOut.stop();
+//			if(httpAideoOut!=null)
+//				httpAideoOut.stop();
             if (wl != null)
                 wl.release();
-            if (httpAideoOut != null)
-                httpAideoOut.release();
+//			if(httpAideoOut!=null)
+//				httpAideoOut.release();
             finish();
             getApplication().onTerminate();
         }
@@ -805,4 +827,17 @@ public class ViewPanel extends Activity implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder arg0) {
         surfaceExists = false;
     }
+
+    //------------------------------------------------------
+    //2013/04 Replaced by Wethink Ltd. Create new audio out solution
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (aoManager != null) {
+            aoManager.stopRecording();
+            aoManager.release();
+            aoManager = null;
+        }
+    }
+    //------------------------------------------------------
 }

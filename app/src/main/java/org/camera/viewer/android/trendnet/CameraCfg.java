@@ -35,9 +35,6 @@ public class CameraCfg extends Activity {
     private Spinner mType;
     private ArrayAdapter<String> mTypeAdapter;
 
-    public static final String AUTHORITY = "org.camera.viewer.android.trendnet.cameraprovider";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/camerainfos");
-
     /**
      * Called when the activity is first created.
      */
@@ -78,7 +75,7 @@ public class CameraCfg extends Activity {
                 values.put(CameraInfos.PASSWORD, pw);
 
                 values.put(CameraInfos.MODEL, model.getText().toString());
-                Uri newAddUri = CameraCfg.this.getContentResolver().insert(CONTENT_URI, values);
+                Uri newAddUri = CameraCfg.this.getContentResolver().insert(CameraProvider.CONTENT_URI, values);
 
                 Intent abIntent = new Intent();
                 abIntent.setClass(CameraCfg.this, AddressBook.class);

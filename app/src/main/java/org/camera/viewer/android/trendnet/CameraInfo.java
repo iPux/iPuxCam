@@ -1,6 +1,5 @@
 package org.camera.viewer.android.trendnet;
 
-import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class CameraInfo {
@@ -11,7 +10,6 @@ public class CameraInfo {
         private CameraInfos() {
         }
 
-        public static final Uri CONTENT_URI = Uri.parse("content://" + CameraProvider.AUTHORITY + "/camerainfos");
         public static final String CAMERA_ID = "_id";
         public static final String NAME = "name";
         public static final String HOST = "host";

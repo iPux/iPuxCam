@@ -41,3 +41,7 @@ v2.0.5:
 
 v2.0.6:
   - add update firmware message
+
+v2.0.7:
+  - Fix audio issue.
+  - talk function changes with the microphone icon
