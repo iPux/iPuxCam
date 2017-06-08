@@ -11,6 +11,19 @@ android {
         versionCode 9
         versionName "2.0.7"
     }
+
+    productFlavors {
+        FitiVision_iPuxCam {
+            applicationId = "org.camera.viewer.android.ipux"
+        }
+        PhoebeMicro_SkyIPCam {
+            applicationId = "org.camera.viewer.android.phoebemicro"
+        }
+        SecurViewMobile {
+            applicationId = "org.camera.viewer.android.trendnet"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
